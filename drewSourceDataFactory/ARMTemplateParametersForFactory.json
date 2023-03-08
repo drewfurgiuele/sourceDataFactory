@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "drewSourceDataFactory"
+		},
+		"source_AzureSQLDB_MI_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master"
+		},
+		"source_AzureSQLDB_Credentials_connectionString": {
+			"value": ""
+		},
+		"source_AzureSQLDB_KeyVault_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master;User ID=drew"
+		},
+		"source_AzureKeyVault_properties_typeProperties_baseUrl": {
+			"value": "https://dfkeyvault03.vault.azure.net/"
+		}
+	}
+}

@@ -1,0 +1,72 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "drewSourceDataFactory"
+		},
+		"source_AzureSQLDB_MI_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'source_AzureSQLDB_MI'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master"
+		},
+		"source_AzureSQLDB_Credentials_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'source_AzureSQLDB_Credentials'"
+		},
+		"source_AzureSQLDB_KeyVault_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'source_AzureSQLDB_KeyVault'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master;User ID=drew"
+		},
+		"source_AzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://dfkeyvault03.vault.azure.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "drewSourceDataFactory_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"source_AzureSQLDB_MI_connectionString": {
+						"value": "[parameters('source_AzureSQLDB_MI_connectionString')]"
+					},
+					"source_AzureSQLDB_Credentials_connectionString": {
+						"value": "[parameters('source_AzureSQLDB_Credentials_connectionString')]"
+					},
+					"source_AzureSQLDB_KeyVault_connectionString": {
+						"value": "[parameters('source_AzureSQLDB_KeyVault_connectionString')]"
+					},
+					"source_AzureKeyVault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('source_AzureKeyVault_properties_typeProperties_baseUrl')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
