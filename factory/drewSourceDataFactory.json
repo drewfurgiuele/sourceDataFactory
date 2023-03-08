@@ -1,0 +1,9 @@
+{
+	"name": "drewSourceDataFactory",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "be8e36c7-7575-4a87-b9b8-53b9c8da0336",
+		"tenantId": "b596a343-b54c-4c35-a893-5bce52fc087a"
+	}
+}
