@@ -1,0 +1,23 @@
+{
+	"name": "ASampleCSVFile",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "source_DataLake_MI",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "targetfile.csv",
+				"folderPath": "directory",
+				"fileSystem": "containerName"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

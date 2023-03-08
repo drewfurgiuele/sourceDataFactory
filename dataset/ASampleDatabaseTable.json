@@ -1,0 +1,16 @@
+{
+	"name": "ASampleDatabaseTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "source_AzureSQLDB_MI",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SomeTable"
+		}
+	}
+}
