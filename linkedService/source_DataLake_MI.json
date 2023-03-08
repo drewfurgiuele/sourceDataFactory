@@ -1,0 +1,10 @@
+{
+	"name": "source_DataLake_MI",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://dfdatalake01.dfs.core.windows.net/"
+		}
+	}
+}
