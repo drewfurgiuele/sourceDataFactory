@@ -7,11 +7,6 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "drewSourceDataFactory"
 		},
-		"source_AzureSQLDB_MI_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'source_AzureSQLDB_MI'",
-			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master"
-		},
 		"source_AzureSQLDB_Credentials_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'source_AzureSQLDB_Credentials'"
@@ -21,9 +16,26 @@
 			"metadata": "Secure string for 'connectionString' of 'source_AzureSQLDB_KeyVault'",
 			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master;User ID=drew"
 		},
+		"source_AzureSQLDB_MI_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'source_AzureSQLDB_MI'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master"
+		},
+		"source_DataLake_Key_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'source_DataLake_Key'"
+		},
 		"source_AzureKeyVault_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://dfkeyvault03.vault.azure.net/"
+		},
+		"source_DataLake_Key_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dfdatalake01.dfs.core.windows.net/"
+		},
+		"source_DataLake_MI_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://dfdatalake01.dfs.core.windows.net/"
 		}
 	},
 	"variables": {
@@ -31,14 +43,135 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/source_AzureSQLDB_MI')]",
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "A Sample Copy Activity",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ASampleDatabaseTable",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ASampleCSVFile",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ASampleDatabaseTable')]",
+				"[concat(variables('factoryId'), '/datasets/ASampleCSVFile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ASampleCSVFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "source_DataLake_MI",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "targetfile.csv",
+						"folderPath": "directory",
+						"fileSystem": "containerName"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/source_DataLake_MI')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ASampleDatabaseTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "source_AzureSQLDB_MI",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "SomeTable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/source_AzureSQLDB_MI')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/source_AzureKeyVault')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"type": "AzureSqlDatabase",
+				"type": "AzureKeyVault",
 				"typeProperties": {
-					"connectionString": "[parameters('source_AzureSQLDB_MI_connectionString')]"
+					"baseUrl": "[parameters('source_AzureKeyVault_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []
@@ -52,19 +185,6 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('source_AzureSQLDB_Credentials_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/source_AzureKeyVault')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('source_AzureKeyVault_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []
@@ -91,6 +211,49 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/source_AzureKeyVault')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/source_AzureSQLDB_MI')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('source_AzureSQLDB_MI_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/source_DataLake_Key')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('source_DataLake_Key_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('source_DataLake_Key_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/source_DataLake_MI')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('source_DataLake_MI_properties_typeProperties_url')]"
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }

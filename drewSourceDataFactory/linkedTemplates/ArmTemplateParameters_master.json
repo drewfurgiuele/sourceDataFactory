@@ -5,17 +5,26 @@
 		"factoryName": {
 			"value": "drewSourceDataFactory"
 		},
-		"source_AzureSQLDB_MI_connectionString": {
-			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master"
-		},
 		"source_AzureSQLDB_Credentials_connectionString": {
 			"value": ""
 		},
 		"source_AzureSQLDB_KeyVault_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master;User ID=drew"
 		},
+		"source_AzureSQLDB_MI_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master"
+		},
+		"source_DataLake_Key_accountKey": {
+			"value": ""
+		},
 		"source_AzureKeyVault_properties_typeProperties_baseUrl": {
 			"value": "https://dfkeyvault03.vault.azure.net/"
+		},
+		"source_DataLake_Key_properties_typeProperties_url": {
+			"value": "https://dfdatalake01.dfs.core.windows.net/"
+		},
+		"source_DataLake_MI_properties_typeProperties_url": {
+			"value": "https://dfdatalake01.dfs.core.windows.net/"
 		},
 		"containerUri": {
 			"value": ""
