@@ -1,0 +1,18 @@
+{
+	"name": "source_AzureSQLDB_KeyVault",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=dfsqlserver03.database.windows.net;Initial Catalog=master;User ID=drew",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "source_AzureKeyVault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "dbPassword"
+			}
+		}
+	}
+}
